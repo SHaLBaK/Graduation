@@ -3,11 +3,11 @@ pandas
 math
 os
 matplotlib.pyplotmissingno
-seaborn as sns
-pandas.plotting import scatter_matrix
+seaborn
+pandas.plotting
 folium
-streamlit_folium import st_folium
-streamlit_folium import folium_static
+streamlit_folium
+streamlit_folium
 import
 import
 pyproj
