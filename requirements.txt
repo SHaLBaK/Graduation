@@ -1,16 +1,1 @@
-numpy
-pandas
-math
-os
-matplotlib.pyplotmissingno
-seaborn
-pandas.plotting
-folium
-streamlit_folium
-streamlit_folium
-import
-import
-pyproj
-shapely
-momepy
-streamlit
+geopandas
