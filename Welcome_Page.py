@@ -8,13 +8,13 @@ from shapely import wkt
 st.set_page_config(layout="wide", page_title='Pages')
 st.markdown("""<style> section[data-testid="stSidebar"][aria-expanded="true"]{min-width: 100px;max-width: 250px; display: inline; } </style>""", unsafe_allow_html=True)
 # Uncomment this below to activate the sidebar hide
-st.markdown("""
-   <style>
-       section[data-testid="stSidebar"][aria-expanded="true"]{
-           display: none;
-       }
-   </style>
-   """, unsafe_allow_html=True)
+# st.markdown("""
+#    <style>
+#        section[data-testid="stSidebar"][aria-expanded="true"]{
+#            display: none;
+#        }
+#    </style>
+#    """, unsafe_allow_html=True)
 
 # Title
 st.title("Mobility Plan Database Integration")
