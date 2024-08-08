@@ -64,12 +64,12 @@ with st.spinner("Loading Data ... "):
 
         if 'Final_db' not in st.session_state:    
                         # Loading the Integrated output from previous process
-                        Final_db_o = pd.read_csv(r'Data\Final\Final.csv', header=0 , low_memory = False)
+                        Final_db_o = pd.read_csv(r'Data/Final/Final.csv', header=0 , low_memory = False)
                         Final_db_o['geometry'] = Final_db_o['geometry'].apply(wkt.loads)
                         Final_db = gpd.GeoDataFrame (Final_db_o, geometry= 'geometry', crs= 2276 )
                         st.session_state.Final_db = Final_db
         if 'TXDOT' not in st.session_state:
-                st.session_state.TXDOT = pd.read_csv(r'Data\TXDOT\TXDOT.csv', header=0 )
+                st.session_state.TXDOT = pd.read_csv(r'Data/TXDOT/TXDOT.csv', header=0 )
                 st.session_state.TXDOT['geometry'] = st.session_state.TXDOT['geometry'].apply(wkt.loads)
                 st.session_state.TXDOT = gpd.GeoDataFrame (st.session_state.TXDOT, geometry= 'geometry', crs= 2276 )
 
