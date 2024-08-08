@@ -58,7 +58,7 @@ with st.spinner("Loading Data ... "):
                 st.session_state.TO = 'Welch'
 
         if 'Intersection_points' not in st.session_state:     
-                        Intersection_points = gpd.read_file( r'Data\Urban_SDK\Intersection_points.shp' )
+                        Intersection_points = gpd.read_file( r'Data/Urban_SDK/Intersection_points.shp' )
                         Intersection_points.to_crs(crs = "epsg:2276" , inplace=True)
                         st.session_state.Intersection_points = Intersection_points
 
