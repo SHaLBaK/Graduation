@@ -21,7 +21,7 @@ st.title("Mobility Plan Database Integration")
 st.subheader("By: Mohammad Shalbak")
 st.divider()
 
-st.navigation([st.Page(page1), st.Page("0_About.py"), st.Page(page2), st.Page("2_Crash Map.py") ])
+st.navigation([st.Page("0_About.py"), st.Page("2_Crash Map.py") ])
 
 # Session state var and DB's:
 with st.spinner("Loading Data ... "):
