@@ -43,7 +43,7 @@ st.markdown('''
 
 st.write ( ' ')
 st.write( '##### Intersection (From & To):')
-st.image(r'Data/img01.png', caption='Intersection Process')
+st.image('Data/img01.png', caption='Intersection Process')
 st.markdown('''
      Finding a segment of the street using the streets it intersects was challenging because the original database did not contain
      from or to features, that can be achieved on three stages:
