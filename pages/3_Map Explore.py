@@ -101,7 +101,7 @@ with st.form('Interactive Explore Map'):
 
     from pyproj import CRS, Transformer
 
-    file = r'C:\Eastern\DTSC_691\Project\Source_Data\TxDOT_Crash_Data\my_list.csv'
+    file = r'Data/TxDOT_Crash_Data/my_list.csv'
 
     # Since our source data is Geospatial data we will use Geopanda to read the file.
     TXDOT = pd.read_csv(file, header=0)
