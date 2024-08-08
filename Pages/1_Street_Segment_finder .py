@@ -28,29 +28,10 @@ import streamlit as st
 # Page Config
 st.set_page_config(layout="wide")
 st.title('Interactive Map Plot and DataFrame')
-st.subheader ('Fill the street name, From and To boxes to generate your Map')
+st.subheader ('Fill in the Street name, From and To Fields to generate your Map')
+st.markdown("""<style> section[data-testid="stSidebar"][aria-expanded="true"]{min-width: 100px;max-width: 250px; display: inline; } </style>""", unsafe_allow_html=True)
 
-
-# Session state var:
-if 'st_map' not in st.session_state:
-        st.session_state.st_map = 0
-
-if 'output_df' not in st.session_state:
-        st.session_state.output_df = 1
-
-if 'ST_NAME' not in st.session_state:
-        st.session_state.ST_NAME = 'eagle'
-
-if 'FROM' not in st.session_state:
-        st.session_state.FROM = 'fulton'
-
-if 'TO' not in st.session_state:
-        st.session_state.TO = 'Welch'
-
-if 'TXDOT' not in st.session_state:
-        st.session_state.TXDOT = 1
-
-# Setting the streets types appriviations
+# Setting the streets types appriviations var
 abb_dict = {'Alley ': 'ALY','Avenue ': 'AVE','Boulevard ':'BLVD','Causeway ':'CSWY','Center ':'CTR','Circle ':'CIR',
             'Court ':'CT','Cove ':'CV','Crossing ':'XING','Drive ':'DR','Expressway ':'EXPY','Extension ':'EXT',
             'Freeway ':'FWY','Grove ':'GRV','Highway ':'HWY','Hollow ':'HOLW','Junction ':'JCT','Lane ':'LN',
@@ -58,47 +39,41 @@ abb_dict = {'Alley ': 'ALY','Avenue ': 'AVE','Boulevard ':'BLVD','Causeway ':'CS
             'Point ':'PT','Road ':'RD','Route ':'RTE','Skyway ':'SKWY','Square ':'SQ','Street ':'ST','Terrace ':'TER',
             'Trail ':'TRL','Way ':'WAY'}
 
-#S###########################################<LOAD DATA>############################################
-# file = r'C:\Eastern\DTSC_691\Project\Output\Urban_SDK\SDK_Updated.shp'
-# Urban_SDK_updated = gpd.read_file( file )
-# Urban_SDK_updated.to_crs(crs = "epsg:2276" , inplace=True)
-import time
-with st.spinner("Loading Data ... "):
-
-        file = r'C:\Eastern\DTSC_691\Project\Output\Urban_SDK\Urban_SDK_int.shp'
-        Urban_SDK_int = gpd.read_file( file )
-        Urban_SDK_int.to_crs(crs = "epsg:2276" , inplace=True)
-
-
-        # Loading the Integrated output from previous process
-        Final_db_o = pd.read_csv(r'C:\Eastern\DTSC_691\Project\Output\Final\Final_beforeFlood.csv', low_memory=False , header=0)
-
-        Final_db_o['geometry'] = Final_db_o['geometry'].apply(wkt.loads)
-
-        Final_db_o = gpd.GeoDataFrame (Final_db_o, geometry= 'geometry', crs= 2276 )
-
-        Final_db = Final_db_o[['road_segment_id', 'road_segment_length', 'ST_NAME_sd_',
-       'speed_category', 'funclass_name', 'ST_TYPE', 'direction','OWNER_F7', 
-       'EX_CLASS', 'FUT_CLASS', 'CONTEXT', 'SPEED', 'BIKE', 'PARKING', 'JURIS',
-       'LANES','STATUS','Crash ID', 'Contributing Factors', 'Crash Date',
-       'Crash Month', 'Crash Total Injury Count', 'Day of Week', 'Hour of Day',
-       'Intersecting Street Name', 'Number of Lanes', 'Road Class',
-       'Roadway Type','Distance', 'Transparen', 'Designatio','POP100', 'HU100',
-       'route_desc', 'route_type','Sidewalk_I_F6', 'FunCL_F6','SW_Type', 'SW_Materia',
-       'From', 'To', 'To_2', 'To_3', 'To_4','geometry']]
-
-#E###########################################<LOAD DATA>############################################
-
-f, g = st.columns( [2, 1 ])
+# Setting the features to column dict:
+features_dict = {'ST_NAME_sd_' : 'Street name',
+        'road_segment_length' : 'Total Length',
+        'speed_category' : 'Speed Limit',
+        'funclass_name': 'Street Classification',
+        'OWNER_F7': 'Street Ownership',
+        'CONTEXT': 'Living Context',
+        'BIKE': 'Bike' ,
+        'PARKING':'Parking',
+        'JURIS': 'Juristriction',
+        'SCHZONE':'School Zone',
+        'LANES': 'Number of Lanes',
+        'Crash ID':'Number of crashes',
+        'Designatio':'Designation',
+        'POP100': 'Population',
+        'HU100': 'House numbers',
+        'FNODE1_1': 'Truck route',
+        'Sidewalk_I_F6':'Sidewalk'}
+        
+# Setting the interface selection names and order:
+Selections = ['Street name','Total Length','Street Classification','Street Ownership','Juristriction',
+                      'Living Context','Speed Limit','Number of crashes','Bike','Parking','School Zone',
+                      'Number of Lanes','Designation','Population','House numbers','Truck route','Sidewalk']
+options = []
 
 #S###########################################<Values reset>############################
+f, g = st.columns( [2, 1 ])
+
 def on_click():
     st.session_state.ST_NAME = ''
     st.session_state.FROM = ''
     st.session_state.TO = ''
 #E###########################################<Values reset>############################
 
-#S###########################################<Function Find intersection>############################
+#S###########################################<Function Find intersection>##############
 # Original Code from Jesse Nestler:
 # (https://medium.com/@jesse.b.nestler/how-to-find-geometry-intersections-within-the-same-dataset-using-geopandas-59cd1a5f30f9)
 
@@ -144,10 +119,10 @@ def find_intersections(gdf_A: gpd.GeoDataFrame, gdf_B: gpd.GeoDataFrame):
 
 #S###########################################<Input and intersection>############################
 
-
-with st.form('Interactive Map'):
+with st.form('Interactive Segment Map'):
         d, j, e = st.columns ([40 ,1, 15])
         with d:
+                # User input section:
                 a, b , c = st.columns( [1,1,1] )
 
                 with a:
@@ -157,38 +132,41 @@ with st.form('Interactive Map'):
                 with c:
                         st.session_state.TO = st.text_input('To:', st.session_state.TO)              
                 
-                # Clear Button
+                # Clear and submit Buttons
                 map_b = st.form_submit_button('Draw Map', use_container_width = True)
                 map_b2 = st.form_submit_button('Clear Names', use_container_width = True, on_click=on_click)
 
-                #Urban_SDK_updated = st.session_state.DB_Main
-                # Function Find street segment and plot
+                # Filter database based on use input and find street segment:
                 name1 = st.session_state.ST_NAME
                 from1 = st.session_state.FROM
                 to1 = st.session_state.TO
-                Urban_filter1 =  Urban_SDK_int[Urban_SDK_int['ST_NAME_le' ].str.contains ( name1 , case = False)  | 
-                        Urban_SDK_int['ST_NAME_ri'].str.contains ( name1 , case = False) ]
-                Urban_filter2      =  Urban_filter1 [ Urban_filter1['ST_NAME_ri'].str.contains ( from1 , case = False) |
-                        Urban_filter1['ST_NAME_ri'].str.contains ( to1 , case = False)   |
-                        Urban_filter1['ST_NAME_le'].str.contains ( from1 , case = False)  |
-                        Urban_filter1['ST_NAME_le'].str.contains ( to1 , case = False)      ] 
-                partial = Final_db[Final_db['ST_NAME_sd_'].str.contains ( name1 , case = False)]
-                p_from = partial[ partial ['From'].str.contains (from1, case =False) |
-                        partial ['To'  ].str.contains (from1, case =False) |
-                        partial ['To_2'].str.contains (from1, case =False) |
-                        partial ['To_3'].str.contains (from1, case =False) |
-                        partial ['To_4'].str.contains (from1, case =False) ]
-                p_to   = partial[ partial ['From'].str.contains (to1, case =False) |
-                        partial ['To'  ].str.contains (to1, case =False) |
-                        partial ['To_2'].str.contains (to1, case =False) |
-                        partial ['To_3'].str.contains (to1, case =False) |
-                        partial ['To_4'].str.contains (to1, case =False) ]               
-                line_df = pd.concat ( [ find_intersections ( Urban_filter2 ,p_from ).drop_duplicates('intersection_geom')['intersection_geom'] ,
-                                        find_intersections (Urban_filter2 , p_to ).drop_duplicates('intersection_geom') ['intersection_geom']]   )
+
+                Filter1 =  st.session_state.Intersection_points[st.session_state.Intersection_points['ST_NAME_le' ].str.contains ( name1 , case = False)  | 
+                        st.session_state.Intersection_points['ST_NAME_ri'].str.contains ( name1 , case = False) ]
+                Filter2      =  Filter1 [ Filter1['ST_NAME_ri'].str.contains ( from1 , case = False) |
+                        Filter1['ST_NAME_ri'].str.contains ( to1 , case = False)   |
+                        Filter1['ST_NAME_le'].str.contains ( from1 , case = False)  |
+                        Filter1['ST_NAME_le'].str.contains ( to1 , case = False)      ] 
+                Filtered_DB = st.session_state.Final_db[st.session_state.Final_db['ST_NAME_sd_'].str.contains ( name1 , case = False)]
+                Filtered_from = Filtered_DB[ Filtered_DB ['From'].str.contains (from1, case =False) |
+                        Filtered_DB ['To'  ].str.contains (from1, case =False) |
+                        Filtered_DB ['To_2'].str.contains (from1, case =False) |
+                        Filtered_DB ['To_3'].str.contains (from1, case =False) |
+                        Filtered_DB ['To_4'].str.contains (from1, case =False) ]
+                Filtered_to   = Filtered_DB[ Filtered_DB ['From'].str.contains (to1, case =False) |
+                        Filtered_DB ['To'  ].str.contains (to1, case =False) |
+                        Filtered_DB ['To_2'].str.contains (to1, case =False) |
+                        Filtered_DB ['To_3'].str.contains (to1, case =False) |
+                        Filtered_DB ['To_4'].str.contains (to1, case =False) ]               
+                
+                # Create a line from user input intersection points:
+                line_df = pd.concat ( [ find_intersections ( Filter2 ,Filtered_from ).drop_duplicates('intersection_geom')['intersection_geom'] ,
+                                        find_intersections (Filter2 , Filtered_to ).drop_duplicates('intersection_geom') ['intersection_geom']]   )
                 line_df.drop_duplicates(inplace=True)
 
-                buff = partial
-                if not p_from.empty and not p_to.empty:
+                # create a buffer for the line that equals to the line length / 2 
+                buff = Filtered_DB
+                if not Filtered_from.empty and not Filtered_to.empty:
                         if  len (line_df) > 1:
 
                                 l1 = LineString ( line_df )
@@ -200,67 +178,80 @@ with st.form('Interactive Map'):
                         st.markdown(
                                 '<p class="big-font"> Streets dont intersect or incorrect name !</p>', unsafe_allow_html=True)
                 
-                out1 = partial.clip (buff)
+                # Clip the filtered DB to the intersection of interest:
+                out1 = Filtered_DB.clip (buff)
                 output_df = out1.drop_duplicates('road_segment_id')              
-                        
                 st.session_state.output_df = output_df
 
-
                 
-                
-        #E###########################################<Plot>############################
-                        
-
-
-        #E###########################################<Input and intersection>############################
-
 
         #S###########################################<Metrics>############################
-
+                # Setting up metricts section and values:
                 with e:
                         if not output_df.empty:
                                 
-                                        options = st.multiselect(
-                                        "Select Features to show Metrics:", output_df.columns
-                                        , ['ST_NAME_sd_' , 'funclass_name' , 'Designatio' , 'JURIS', 'LANES' , 'road_segment_length', 'FUT_CLASS'], max_selections = 7 )                    
+                                options_n = st.multiselect(
+                                        "Select Features to show Metrics:", Selections
+                                        , ['Street name','Total Length','Street Classification','Street Ownership'], max_selections = 7 )                    
 
-                                        Default_Selection = st.checkbox("Default Selection")
+                                Default_Selection = st.checkbox("Default Selection")
 
-                                        if Default_Selection:
-                                                options = ['ST_NAME_sd_' , 'funclass_name' , 'Designatio' , 'JURIS', 'LANES' , 'road_segment_length', 'FUT_CLASS']
-                                
+                                if Default_Selection:
+                                                options_n = []
+                                                options = ['ST_NAME_sd_' , 'funclass_name' , 'Designatio' , 'JURIS', 'LANES' , 'road_segment_length']
                                 
                         if map_b:
-                                for i in options:
-                                        if i == 'road_segment_length':
-                                                st.metric( i ,  f'{ round (output_df[ i ].sum(), 2) } Miles' )
-                                                continue
-                                        if not output_df[i].empty:
-                                                st.metric( i ,  output_df[ i ].mode()[0]  )
-                
+                                for i in features_dict:
+                                        if features_dict.get(i) in options_n:
+                                                options.append (i) 
 
-                #S###########################################<Plot>############################
+                                for i in options:
+                                        
+                                        if i == 'road_segment_length':
+                                                st.metric( 'Total Length' ,  f'{ round (output_df[ i ].sum(), 2) } Miles' )
+                                                continue
+                                        
+                                        if i == 'POP100':
+                                                st.metric( 'Surrounding Population' ,  output_df[ i ].sum() )
+                                                continue
+
+                                        if i == 'Crash ID':
+                                                st.metric( 'Number of Crashes' ,  output_df[ i ].drop_duplicates().count() )
+                                                continue
+
+                                        if i in ['SCHZONE','Crash ID', 'FNODE1_1', 'Sidewalk_I_F6'] :
+                                                ref = features_dict.get(i)     
+                                                if output_df[ i ].mode().empty:
+                                                        st.metric( ref ,  'No' )
+                                                        continue
+                                                else:
+                                                        st.metric( ref ,  'Yes' )
+                                                        continue   
+
+                                        if not output_df[i].empty:
+                                                ref = features_dict.get(i)
+                                                st.metric( ref ,  output_df[ i ].mode()[0]  )              
+
+        #S###########################################<Plot>############################
                 if not output_df.empty:
                          if map_b:
 
                                 st_folium(st.session_state.output_df.explore ( name = 'Test_output' , legend = True, tooltip=options , popup =options ),
-                                        width = 1000 , height = 600, zoom= 17)
+                                        width = 1000 , height = 600, zoom= 15)
                 else:
                                 st.markdown("""
                                 <style> .big-font { font-size:30px !important; } </style> """, unsafe_allow_html=True)
 
                                 st.markdown('<p class="big-font">Please check street names and try again !</p>', unsafe_allow_html=True)
 
-
-
-
         if map_b:
-        #E###########################################<Metrics>############################
+        #E###########################################<Plot>############################
+
                 st.divider()
-        #E###########################################<Dataframe>############################
+        #E###########################################<Dataframe>######################
                 st.dataframe( output_df[options] ,use_container_width = True)
-        #E###########################################<Dataframe>############################
-#Final_db.columns
+        #E###########################################<Dataframe>######################
+
 
 # END ALL
 
