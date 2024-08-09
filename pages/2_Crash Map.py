@@ -22,7 +22,7 @@ st.markdown("""<style> section[data-testid="stSidebar"][aria-expanded="true"]{mi
 
 ## Data and var.
 ### TxDOT Crash data
-TXDOT = pd.read_csv(r'Data/TxDOT_Crash_Data/my_list (1)_Updated.csv', header=0 )
+TXDOT = pd.read_csv(r'data/TxDOT_Crash_Data/my_list (1)_Updated.csv', header=0 )
 TXDOT = TXDOT[TXDOT.Longitude != 'No Data']
 trans = Transformer.from_crs("epsg:4326", "epsg:2276", always_xy=True)
 TXDOT['coord'] = ''
@@ -34,7 +34,7 @@ Dist = 1
 # Other Data
 if 'Intersection_points' not in st.session_state:
         st.session_state.Intersection_points = 1
-        Intersection_points = gpd.read_file( r'Data/Urban_SDK/Intersection_points.shp' )
+        Intersection_points = gpd.read_file( r'data/Urban_SDK/Intersection_points.shp' )
         Intersection_points.to_crs(crs = "epsg:2276" , inplace=True)
         Intersection_points = st.session_state.Intersection_points 
 

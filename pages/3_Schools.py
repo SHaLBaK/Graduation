@@ -23,13 +23,13 @@ st.markdown("""<style> section[data-testid="stSidebar"][aria-expanded="true"]{mi
 
 ## Data Source
 
-Schools = gpd.read_file( r'Data/Schools/Schools.shp' )
+Schools = gpd.read_file( r'data/Schools/Schools.shp' )
 Schools.to_crs(crs = "epsg:2276" , inplace=True)
 
 schools_names = Schools.SCHOOL.to_list()
 
 if 'Sidewalk' not in st.session_state:
-                st.session_state.Sidewalk = gpd.read_file(r'Data/Sidewalk/Sidewalk.shp'  )
+                st.session_state.Sidewalk = gpd.read_file(r'data/Sidewalk/Sidewalk.shp'  )
 
 features_dict = {'ST_NAME_sd_' : 'Street name',
                 'road_segment_length' : 'Total Length',
