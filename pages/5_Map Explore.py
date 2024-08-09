@@ -20,30 +20,30 @@ st.markdown("""<style> section[data-testid="stSidebar"][aria-expanded="true"]{mi
 # Loading Data
 with st.spinner("Loading Data ... "):
         if 'Land_use' not in st.session_state:
-                st.session_state.Land_use = gpd.read_file(r'Data/Land_use/Land_use.shp'  )
+                st.session_state.Land_use = gpd.read_file(r'data/Land_use/Land_use.shp'  )
 
         if 'Popu' not in st.session_state:
-                st.session_state.Popu = gpd.read_file(r'Data/Popu/Popu.shp'  )
+                st.session_state.Popu = gpd.read_file(r'data/Popu/Popu.shp'  )
 
         if 'DTCA' not in st.session_state:
-                st.session_state.DTCA = gpd.read_file(r'Data/DTCA/DTCA.shp'  )
+                st.session_state.DTCA = gpd.read_file(r'data/DTCA/DTCA.shp'  )
 
         if 'Sidewalk' not in st.session_state:
-                st.session_state.Sidewalk = gpd.read_file(r'Data/Sidewalk/Sidewalk.shp'  )
+                st.session_state.Sidewalk = gpd.read_file(r'data/Sidewalk/Sidewalk.shp'  )
 
         if 'Ramps' not in st.session_state:
-                st.session_state.Ramps = gpd.read_file(r'Data/Ramps/Ramps.shp'  )
+                st.session_state.Ramps = gpd.read_file(r'data/Ramps/Ramps.shp'  )
 
         if 'Flood' not in st.session_state:
-                st.session_state.Flood = gpd.read_file(r'Data/Flood/Flood.shp')
-                #Flood = pd.read_csv(r'Data/Flood/Flood.shp')# , header= 0 )
+                st.session_state.Flood = gpd.read_file(r'data/Flood/Flood.shp')
+                #Flood = pd.read_csv(r'data/Flood/Flood.shp')# , header= 0 )
                 #st.session_state.Flood = gpd.GeoDataFrame(Flood , geometry='geometry' , crs = 2276 )              
 
         if 'Trucks' not in st.session_state:
-                st.session_state.Trucks = gpd.read_file(r'Data/Trucks/Trucks.shp'  )
+                st.session_state.Trucks = gpd.read_file(r'data/Trucks/Trucks.shp'  )
 
         if 'Speed' not in st.session_state:
-                st.session_state.Speed = gpd.read_file(r'Data/Speed/Speed.shp'  )
+                st.session_state.Speed = gpd.read_file(r'data/Speed/Speed.shp'  )
 
         if 'boundry' not in st.session_state:
         # Getting the city boundries:
@@ -51,10 +51,10 @@ with st.spinner("Loading Data ... "):
                 st.session_state.Boundries = cities.loc[cities['name'] =='Denton']
 
         if 'DB_Main' not in st.session_state:
-                st.session_state.DB_Main = gpd.read_file(r'Data/Urban_SDK/SDK_Mobility.shp')
+                st.session_state.DB_Main = gpd.read_file(r'data/Urban_SDK/SDK_Mobility.shp')
 
         if 'TXDOT' not in st.session_state:
-                st.session_state.TXDOT = pd.read_csv(r'Data/TXDOT/TXDOT.csv', header=0 )
+                st.session_state.TXDOT = pd.read_csv(r'data/TXDOT/TXDOT.csv', header=0 )
                 st.session_state.TXDOT['geometry'] = st.session_state.TXDOT['geometry'].apply(wkt.loads)
                 st.session_state.TXDOT = gpd.GeoDataFrame (st.session_state.TXDOT, geometry= 'geometry', crs= 2276 )
 
@@ -137,7 +137,7 @@ with st.form('Explore Map'):
 
 
 # Heat map prep
-    file = r'C:/Eastern/DTSC_691/Project/Source_Data/TxDOT_Crash_Data/my_list.csv'
+    file = r'data/TxDOT_Crash_Data/my_list.csv'
     TXDOT = pd.read_csv(file, header=0)
     TXDOT = TXDOT[TXDOT.Longitude != 'No Data']
     trans = Transformer.from_crs("epsg:4326", "epsg:2276", always_xy=True)
