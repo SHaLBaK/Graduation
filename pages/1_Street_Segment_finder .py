@@ -143,30 +143,19 @@ with st.form('Interactive Segment Map'):
 
                 Filter1 =  st.session_state.Intersection_points[st.session_state.Intersection_points['ST_NAME_le' ].str.contains ( name1 , case = False)  | 
                         st.session_state.Intersection_points['ST_NAME_ri'].str.contains ( name1 , case = False) ]
-                Filter2      =  Filter1 [ Filter1['ST_NAME_ri'].str.contains ( from1 , case = False) |
-                        Filter1['ST_NAME_ri'].str.contains ( to1 , case = False)   |
-                        Filter1['ST_NAME_le'].str.contains ( from1 , case = False)  |
-                        Filter1['ST_NAME_le'].str.contains ( to1 , case = False)      ] 
+                Filter2 =  Filter1 [ Filter1['ST_NAME_ri'].str.contains ( from1 , case = False) |
+                                     Filter1['ST_NAME_ri'].str.contains ( to1 , case = False)   |
+                                     Filter1['ST_NAME_le'].str.contains ( from1 , case = False)  |
+                                     Filter1['ST_NAME_le'].str.contains ( to1 , case = False)      ] 
                 Filtered_DB = st.session_state.Final_db[st.session_state.Final_db['ST_NAME_sd_'].str.contains ( name1 , case = False)]
-                Filtered_from = Filtered_DB[ Filtered_DB ['From'].str.contains (from1, case =False) |
-                        Filtered_DB ['To'  ].str.contains (from1, case =False) |
-                        Filtered_DB ['To_2'].str.contains (from1, case =False) |
-                        Filtered_DB ['To_3'].str.contains (from1, case =False) |
-                        Filtered_DB ['To_4'].str.contains (from1, case =False) ]
-                Filtered_to   = Filtered_DB[ Filtered_DB ['From'].str.contains (to1, case =False) |
-                        Filtered_DB ['To'  ].str.contains (to1, case =False) |
-                        Filtered_DB ['To_2'].str.contains (to1, case =False) |
-                        Filtered_DB ['To_3'].str.contains (to1, case =False) |
-                        Filtered_DB ['To_4'].str.contains (to1, case =False) ]               
-                
+                                
                 # Create a line from user input intersection points:
-                line_df = pd.concat ( [ find_intersections ( Filter2 ,Filtered_from ).drop_duplicates('intersection_geom')['intersection_geom'] ,
-                                        find_intersections (Filter2 , Filtered_to ).drop_duplicates('intersection_geom') ['intersection_geom']]   )
+                line_df = pd.concat ( [ find_intersections ( Filter2 ,Filtered_DB ).drop_duplicates('intersection_geom')['intersection_geom'] ] )
                 line_df.drop_duplicates(inplace=True)
 
                 # create a buffer for the line that equals to the line length / 2 
                 buff = Filtered_DB
-                if not Filtered_from.empty and not Filtered_to.empty:
+                if not Filtered_DB.empty :
                         if  len (line_df) > 1:
 
                                 l1 = LineString ( line_df )
